@@ -7,6 +7,7 @@ minikube start \
       --extra-config=apiserver.Authorization.Mode=RBAC \
       --extra-config=apiserver.Authentication.OIDC.IssuerURL=https://myauth0domain.auth.com/ \
       --extra-config=apiserver.Authentication.OIDC.UsernameClaim=email \
+      --extra-config=apiserver.Authentication.OIDC.GroupsClaim=groups \
       --extra-config=apiserver.Authentication.OIDC.ClientID="wakkawakka"
 ``` 
 
