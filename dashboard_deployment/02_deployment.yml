@@ -116,11 +116,11 @@ spec:
           - name: thiscontainerurl
             value: http://192.168.99.100:9000/
           - name: auth0clientid
-            value: re1v6yoBA4Nt2Nry2pYVGaDZZsNiYedz
+            value: myClientId
           - name: auth0clientsecret
-            value: 'fv1j53_yvnwVJXornUCNKTYNFyhM8mpR1CY0JcFvNjjwI7my3IIeDHO8N8ztXUYp'
+            value: 'myClientSecret'
           - name: auth0domain
-            value: trondhindenes.eu.auth0.com
+            value: peterfile.eu.auth0.com
           - name: proxyto
             value: http://localhost:9090/
           - name: OIDC_SESSION_TIMEOUT_SECONDS
