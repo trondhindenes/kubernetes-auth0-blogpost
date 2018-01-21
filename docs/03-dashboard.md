@@ -16,6 +16,16 @@ It's important to note that the kubernetes apiserver does _not_ verify the jwt w
 All of this is contained in the folder `dashboard_deployment` in this repo. 
 It's worth noting that you'll likely want to change the configuration a bit. You'll probably use either a Load balancer or an Ingress to expose the dashboard. However, I wanted a setup that doesn't make any assumptions, so I'm using a NodePort service type. This means that Kubernetes will assign an arbitrary port to the dashboard. This also means that we'll have to run things in the right order:
 
+We need to make sure that minikube's builtin dns and dashboard addons are disabled, as we'll add our own:
+`minikube addons list`
+If kube-dns or dashboard are `enabled`, disable them by running:
+`minikube addons disable dashboard`   
+`minikube addons disable kube-dns`   
+
+Use the kube-dns configuration in this repo to add a rbac-compatible dns service:
+`kubectl apply -f dashboard_deployment/01_kube_dns.yml`
+
+
 Start with running the following command to get the ip address of your minikube instance:
 `minikube ip`
 We'll map the Kubernetes Dashboard to `http://<minikube ip>:9000`
@@ -27,17 +37,17 @@ Also in the same file, set the correct values for the following environment vari
 `auth0domain`   
 
 When this is done, it's time to deploy!
-`kubectl apply -f dashboard_deployment` - this will deploy all files in the folder to Kubernetes. The file `03_auth.yml` contains the `ClusterRole`/`ClusterRoleBinding` that allows users with the right group membership to access Kubernetes.
+`kubectl apply -f dashboard_deployment/02_deployment.yml` - this will deploy all files in the folder to Kubernetes. 
 
-At this point you need to go back to your Auth0 client settings and add the url to the list of allowed callback urls (in addition to the existing `openidconnect.net`. Make sure you add `http://<minikube ip>:9000/`.)
+At this point you need to go back to your Auth0 client settings and add the url to the list of allowed callback urls (in addition to the existing `https://openidconnect.net/callback`). Make sure you add `http://<minikube ip>:9000/auth/`.
 
+After a few minutes you should be able to visit `http://<minikube ip>:9000`, be prompted by auth0 and logged in to the Kubernetes dashboard. You'll probably see the dashboard, but get errors that you don't have access to view any resources. This is because we haven't configured permissions for the Auth0 group yet. Do this by running:
 
-Now if you access the Kubernetes node ip/service port in your browser, you _should_ be taken to an Auth0 login prompt and then redirected to the Kubernetes dashboard, which should look something like this:
+`kubectl apply -f dashboard_deployment/03_auth.yml`
+The file `03_auth.yml` contains the `ClusterRole`/`ClusterRoleBinding` that allows users with the right group membership to access Kubernetes.
 
-![screenshot from 2017-12-25 20-46-15](https://user-images.githubusercontent.com/1747120/34342587-d58f0c98-e9b4-11e7-9570-ba3383361a53.png)
+In order to get a new session you can either use Auth0's logout url (https://auth0.com/docs/logout) or delete the cookie `mod_openid_connection_session` in your browser. If you hit the url again you should be prompted for a new Auth0 login, and this time you should have full access to all the Kubernetes dashboard goodies.
 
-
-As a last test you can remove the `KubernetesAdmins` group from your Auth0 user, and open up a new browser to perform a "fresh" login session. You should be presented by the "Access Denied" message in the dashboard again.
 
 So that's pretty much it. Kubernetes Dashboard is an awesome tool, especially for people who don't have a lot of Kubernetes expertise, and by following this guide you can provide limited access to your cluster without sharing "root" credentials.
 

@@ -114,17 +114,20 @@ spec:
         imagePullPolicy: Always
         env:
           - name: thiscontainerurl
-            value: http://<minikubeip>:9000/
+            value: http://192.168.99.100:9000/
           - name: auth0clientid
-            value: MyClientId
+            value: re1v6yoBA4Nt2Nry2pYVGaDZZsNiYedz
           - name: auth0clientsecret
-            value: 'MyClientSecret'
+            value: 'fv1j53_yvnwVJXornUCNKTYNFyhM8mpR1CY0JcFvNjjwI7my3IIeDHO8N8ztXUYp'
           - name: auth0domain
-            value: myauth0domain.eu.auth0.com
+            value: trondhindenes.eu.auth0.com
           - name: proxyto
             value: http://localhost:9090/
           - name: OIDC_SESSION_TIMEOUT_SECONDS
             value: '36000'
+        ports:
+          - containerPort: 80
+            hostPort: 9000
 
       volumes:
       - name: kubernetes-dashboard-certs
