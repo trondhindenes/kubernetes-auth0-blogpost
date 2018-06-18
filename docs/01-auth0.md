@@ -35,8 +35,8 @@ Paste in this code to the rule and call it "Kubernetes-Group-Claims" or somethin
 
 ```javascript
 function (user, context, callback) {
-  //console.log(user.authorization.groups);
-  context.idToken.groups = user.authorization.groups;
+  const namespace = 'http://trondhindenes.k8s.example.com/';
+  context.idToken[namespace + 'groups'] = user.authorization.groups;
 
   callback(null, user, context);
 }

@@ -7,7 +7,7 @@ minikube start \
       --extra-config=apiserver.Authorization.Mode=RBAC \
       --extra-config=apiserver.Authentication.OIDC.IssuerURL=https://myauth0domain.auth.com/ \
       --extra-config=apiserver.Authentication.OIDC.UsernameClaim=email \
-      --extra-config=apiserver.Authentication.OIDC.GroupsClaim=groups \
+      --extra-config=apiserver.Authentication.OIDC.GroupsClaim=http://trondhindenes.k8s.example.com/groups \
       --extra-config=apiserver.Authentication.OIDC.ClientID="wakkawakka"
 ``` 
 
@@ -15,7 +15,7 @@ The flags you need to pass are:
 `authorization-mode`: Set this to `RBAC`.
 `oidc-issuer-url`: This should be set to the value of the `Domain` in your Auth0 client settings. You MUST add a trailing slash. TRAILING. SLASH.
 `oidc-username-claim`: Should be set to `email`
-`oidc-groups-claim`: Should be set to `groups`. This is why we create the special rule in step 1, so that we have a `groups` attribute in the jwt data that Kubernetes inspects.
+`oidc-groups-claim`: Should be set to `groups` with the configured namespace prefixed. This is why we create the special rule in step 1, so that we have a `groups` attribute in the jwt data that Kubernetes inspects.
 `oidc-client-id`: Should be set to the value of the `Client ID` from your Auth0 client settings.
 
 Make sure you have kubectl (https://kubernetes.io/docs/tasks/tools/install-kubectl/) available locally and on your path.
